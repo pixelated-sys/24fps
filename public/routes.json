@@ -1,0 +1,8 @@
+{
+    "/api/top-popular/genre/Comedy": "/content",
+    "/api/top-popular/genre/Drama": "/content",
+    "/api/top-popular/genre/Horror": "/content",
+    "/api/popular_records": "/content",
+    "/api/watchlist" : "/watchlist",
+    "/api/watched" : "/watched"
+}

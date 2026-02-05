@@ -1,0 +1,83 @@
+button{
+  all: unset;   
+}
+
+.poster{
+    height: 278px;
+    width: 185px;
+    flex: 0 0 185px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 20px;
+    border-radius: 8px;
+    border:2px solid transparent;
+}
+
+.poster:hover{
+    border-color: salmon;
+}
+
+.options{
+    display: flex;
+    justify-content: space-around;
+    height: 10%;
+    width: 100%;
+    background-color: transparent;
+}
+
+
+.watched-icon{
+    width: 58px;
+    height: 38px;
+    -webkit-mask:url("./assets/eye.svg") no-repeat center ;
+    mask:url("./assets/eye.svg") no-repeat center;
+    background-color: gainsboro;
+}
+
+
+
+.watchlist-icon{
+    width: 38px;
+    height: 38px;
+    -webkit-mask:url("./assets/save.svg") no-repeat center ;
+    mask:url("./assets/save.svg") no-repeat center;
+    background-color: gainsboro;
+}
+
+.watchlist-icon.in-watchlist{
+    background-color:  rgb(0, 162, 255);
+}
+
+.watched-icon.in-watched{
+    background-color: rgb(121, 231, 121);
+}
+
+.watchlist-icon:hover{
+    background-color: rgb(0, 162, 255);
+}
+
+.watched-icon:hover{
+    background-color: rgb(121, 231, 121);
+}
+
+@keyframes watchedClickAnimation {
+  0%   {width: 60px; height: 40px;}
+  100% {width: 58px; height: 38px;}
+}
+
+@keyframes watchlistClickAnimation {
+  0%   {width: 40px; height: 40px;}
+  100% {width: 38px; height: 38px;}
+}
+/*
+.watched-icon:active{
+    animation-name: watchedClickAnimation;
+    animation-duration: 1s;
+}
+
+.watchlist-icon:active{
+    animation-name: watchlsClickAnimation;
+    animation-duration: 1s;
+}*/
