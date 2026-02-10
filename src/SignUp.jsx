@@ -2,16 +2,24 @@ import { useForm } from "react-hook-form";
 import './SignUp.css';
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function SignUp({ setIsAuthenticated, setUsername }){
     const {register, handleSubmit, formState : {errors}} = useForm();
+    const [errorMessage,setErrorMessage] = useState("");
     const onSignUp = async (data)=>{
         try {
             console.log(data);
-            const res = await axios.post("http://localhost:3000/api/auth/signup",data); 
-            console.log(res);
-            setIsAuthenticated(true);
-            setUsername(data.username);
+            const res = await axios.post("http://localhost:3000/api/auth/signup",data);
+            if (res.ok){
+                console.log(res);
+                setIsAuthenticated(true);
+                setUsername(data.username);
+            }
+            else{
+                setErrorMessage("User already registered.");
+            }
+
         } catch (error) {
             console.error("Signup error:", error);
         }
@@ -20,6 +28,7 @@ export default function SignUp({ setIsAuthenticated, setUsername }){
         <div className="container nunito-sans-light">
             <div className="signup">
                 <h2>Create an Account</h2>
+                {errorMessage && <p className="error" style={{textAlign: "center", marginBottom: "10px"}}>{errorMessage}</p>}
                 <form onSubmit={handleSubmit(onSignUp)}>
                     <input id="name" placeholder="Name" type="text"
                         {...register("name",{

@@ -12,18 +12,13 @@ export default function Login({ setIsAuthenticated }){
         try {
             console.log(data);
             const res = await axios.post("http://localhost:3000/api/auth/login",data); 
-            if (res =="notFound"){
-                setErrorMessage("Incorrect username. User not registered.");
-                reset();
-                //setTimeout(() => navigate("/signup"), 2000);
-            }
-            else if(res == "incorrectPassword"){
-                setErrorMessage("Incorrect Password");
-                resetField("password");
-            }
-            else{
+            if (res.ok){
                 console.log(res);
                 setIsAuthenticated(true);
+            }
+            else{
+                setErrorMessage("Incorrect username or password.");
+                reset();
             }
         } catch (error) {
             console.error("Signup error:", error);
