@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-export default function SignUp({ setIsAuthenticated, setUsername }){
+export default function SignUp({ setIsAuthenticated, setUsername, setToken}){
     const {register, handleSubmit, formState : {errors}} = useForm();
     const [errorMessage,setErrorMessage] = useState("");
     const onSignUp = async (data)=>{
@@ -14,6 +14,7 @@ export default function SignUp({ setIsAuthenticated, setUsername }){
             console.log(res);
             setIsAuthenticated(true);
             setUsername(data.username);
+            setToken(res.token);
         }
         catch (error) {
             console.error("Signup error:", error);

@@ -4,15 +4,16 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function Login({ setIsAuthenticated }){
+export default function Login({ setIsAuthenticated, setToken }){
     const {register, handleSubmit, formState : {errors}, reset, resetField} = useForm();
     //const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState("");
-    const onSignUp = async (data)=>{
+    const onLogin = async (data)=>{
         try {
             console.log(data);
             const res = await axios.post("http://localhost:3000/api/auth/login",data); 
             console.log(res);
+            setToken(res.token);
             setIsAuthenticated(true);
         } catch (error) {
             console.error("Signup error:", error);
@@ -29,7 +30,7 @@ export default function Login({ setIsAuthenticated }){
             <div className="login">
                 <h2>Login</h2>
                 {errorMessage && <p className="error" style={{textAlign: "center", marginBottom: "10px"}}>{errorMessage}</p>}
-                <form onSubmit={handleSubmit(onSignUp)}>
+                <form onSubmit={handleSubmit(onLogin)}>
                     <input id="username" placeholder="username" type="text"
                         {...register("username",{
                             required:"Username is required",

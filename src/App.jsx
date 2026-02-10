@@ -20,17 +20,50 @@ function App() {
   const [horror,setHorror] = useState([]);
   const [popular,setPopular] = useState([]);
   const [username, setUsername] = useState("");
-
+  const [token,setToken] = useState(localStorage.getItem("token")||null);
+  const login = (newToken) =>{
+    localStorage.setItem("token",newToken);
+    setToken(newToken);
+  }
+  const logout = ()=>{
+    localStorage.removeItem("token");
+    setToken(null);
+    window.location.href("/login");
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [watchlistRes, watchedRes, comedyRes, dramaRes, horrorRes, popularRes] = await Promise.all([
-          axios.get("http://localhost:3000/api/getWatchlist"),
-          axios.get("http://localhost:3000/api/getWatched"),
-          axios.get("http://localhost:3000/api/genre/Comedy"),
-          axios.get("http://localhost:3000/api/genre/Drama"),
-          axios.get("http://localhost:3000/api/genre/Horror"),
-          axios.get("http://localhost:3000/api/getPopularRecords")
+          axios.get("http://localhost:3000/api/getWatchlist",{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }),
+          axios.get("http://localhost:3000/api/getWatched",{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }),
+          axios.get("http://localhost:3000/api/genre/Comedy",{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }),
+          axios.get("http://localhost:3000/api/genre/Drama",{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }),
+          axios.get("http://localhost:3000/api/genre/Horror",{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }),
+          axios.get("http://localhost:3000/api/getPopularRecords",{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
         ]);
         
         console.log("watchlistRes:", watchlistRes);
@@ -62,15 +95,27 @@ function App() {
     try{
       if (isInWatchlist){
         setWatchlist((prev)=> prev.filter((item)=>item.id !== movie.id));
-        await axios.delete(`http://localhost:3000/watchlist/`,{movieId: movie.id, username :username});
+        await axios.delete(`http://localhost:3000/watchlist/`,{movieId: movie.id, username :username},{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
       }
       else{
         if (watched.some(item => item.id === movie.id)){
           setWatched((prev)=> prev.filter((item)=>item.id !== movie.id));
-          await axios.delete(`http://localhost:3000/watched/`,{movieId: movie.id,username :username});
+          await axios.delete(`http://localhost:3000/watched/`,{movieId: movie.id,username :username},{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
         }
         setWatchlist((prev) =>  [...prev, movie]);
-        await axios.post(`http://localhost:3000/addToWatchlist`, {movieId: movie.id, usernmae :username});
+        await axios.post(`http://localhost:3000/addToWatchlist`, {movieId: movie.id, usernmae :username},{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
       }
     } catch (error){
       console.error("Error updating watchlist");
@@ -84,15 +129,27 @@ function App() {
     try{
       if (isInWatched){
       setWatched((prev)=> prev.filter((item)=>item.id !== movie.id));
-      await axios.delete(`http://localhost:3000/deleteFromWatched/`,{movieId: movie.id,username :username});
+      await axios.delete(`http://localhost:3000/deleteFromWatched/`,{movieId: movie.id,username :username},{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
       }
       else{
         if (watchlist.some(item => item.id === movie.id)){
           setWatchlist((prev)=> prev.filter((item)=>item.id !== movie.id));
-          await axios.delete(`http://localhost:3000/deleteFromWatchlist/`,{movieId: movie.id,username :username});
+          await axios.delete(`http://localhost:3000/deleteFromWatchlist/`,{movieId: movie.id,username :username},{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
         }
         setWatched((prev) =>  [...prev, movie]);
-        await axios.post(`http://localhost:3000/addToWatched`, {movieId: movie.id, username: username});
+        await axios.post(`http://localhost:3000/addToWatched`, {movieId: movie.id, username: username},{
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
       }
     } catch{
       console.log("Error updating watched");
@@ -122,8 +179,8 @@ function App() {
         />
         <Route path='/watchlist' element={isAuthenticated ? <Watchlist  watchlist={watchlist} toggleWatchlist={handleAddToWatchlist} watched={watched} toggleWatched={handleAddToWatched}/> : <Navigate to="/signup" />}/>
         <Route path='/watched' element={isAuthenticated ? <Watched watched={watched} toggleWatched={handleAddToWatched} watchlist={watchlist} toggleWatchlist={handleAddToWatchlist}/> : <Navigate to="/signup" />}/>
-        <Route path='/signup' element={!isAuthenticated ? <SignUp setIsAuthenticated={setIsAuthenticated} setUsername={setUsername}/> : <Navigate to="/" />} />
-        <Route path='/login' element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} setUsername={setUsername}/> : <Navigate to="/" />} />
+        <Route path='/signup' element={!isAuthenticated ? <SignUp setIsAuthenticated={setIsAuthenticated} setUsername={setUsername} setToken={login}/> : <Navigate to="/" />} />
+        <Route path='/login' element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} setUsername={setUsername} setToken={login} /> : <Navigate to="/" />} />
         <Route path='*' element={<Navigate to={isAuthenticated ? "/" : "/signup"} />} />
       </Routes>
     </>
