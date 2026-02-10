@@ -8,7 +8,7 @@ export default function SignUp({ setIsAuthenticated, setUsername }){
     const onSignUp = async (data)=>{
         try {
             console.log(data);
-            const res = await axios.post("http://localhost:3000/signup",data);
+            const res = await axios.post("http://localhost:3000/api/auth/signup",data); 
             console.log(res);
             setIsAuthenticated(true);
             setUsername(data.username);

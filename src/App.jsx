@@ -25,12 +25,12 @@ function App() {
     const fetchData = async () => {
       try {
         const [watchlistRes, watchedRes, comedyRes, dramaRes, horrorRes, popularRes] = await Promise.all([
-          axios.get("http://localhost:3000/watchlist"),
-          axios.get("http://localhost:3000/watched"),
-          axios.get("http://localhost:3000/api/top-popular/genre/Comedy"),
-          axios.get("http://localhost:3000/api/top-popular/genre/Drama"),
-          axios.get("http://localhost:3000/api/top-popular/genre/Horror"),
-          axios.get("http://localhost:3000/api/popular_records")
+          axios.get("http://localhost:3000/api/getWatchlist"),
+          axios.get("http://localhost:3000/api/getWatched"),
+          axios.get("http://localhost:3000/api/genre/Comedy"),
+          axios.get("http://localhost:3000/api/genre/Drama"),
+          axios.get("http://localhost:3000/api/genre/Horror"),
+          axios.get("http://localhost:3000/api/getPopularRecords")
         ]);
         
         console.log("watchlistRes:", watchlistRes);
@@ -70,7 +70,7 @@ function App() {
           await axios.delete(`http://localhost:3000/watched/`,{movieId: movie.id,username :username});
         }
         setWatchlist((prev) =>  [...prev, movie]);
-        await axios.post(`http://localhost:3000/watchlist`, {...movie, usernmae :username});
+        await axios.post(`http://localhost:3000/addToWatchlist`, {movieId: movie.id, usernmae :username});
       }
     } catch (error){
       console.error("Error updating watchlist");
@@ -84,15 +84,15 @@ function App() {
     try{
       if (isInWatched){
       setWatched((prev)=> prev.filter((item)=>item.id !== movie.id));
-      await axios.delete(`http://localhost:3000/watched/`,{movieId: movie.id,username :username});
+      await axios.delete(`http://localhost:3000/deleteFromWatched/`,{movieId: movie.id,username :username});
       }
       else{
         if (watchlist.some(item => item.id === movie.id)){
           setWatchlist((prev)=> prev.filter((item)=>item.id !== movie.id));
-          await axios.delete(`http://localhost:3000/watchlist/`,{movieId: movie.id,username :username});
+          await axios.delete(`http://localhost:3000/deleteFromWatchlist/`,{movieId: movie.id,username :username});
         }
         setWatched((prev) =>  [...prev, movie]);
-        await axios.post(`http://localhost:3000/watched`, {...movie, username: username});
+        await axios.post(`http://localhost:3000/addToWatched`, {movieId: movie.id, username: username});
       }
     } catch{
       console.log("Error updating watched");
