@@ -61,10 +61,10 @@ function App() {
                 axios.get("http://localhost:3000/api/genre/Drama"),
                 axios.get("http://localhost:3000/api/genre/Horror"),
                 axios.get("http://localhost:3000/api/getPopularRecords"),
-                axios.get(`http://localhost:3000/api/watchlist/getWatchlist/${username}`, {
+                axios.get(`http://localhost:3000/api/watchlist/getWatchlist/?username=${username}`, {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 }),
-                axios.get(`http://localhost:3000/api/watchedHistory/getWatched/${username}`, {
+                axios.get(`http://localhost:3000/api/watchedHistory/getWatched/?username=${username}`, {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 })
             ]);

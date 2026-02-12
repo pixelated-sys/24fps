@@ -8,14 +8,14 @@ export default function Poster({ movie, onAddToWatchlist, watchlist, onAddToWatc
     
     useEffect(() => {
         if (watchlist) {
-            const isInWatchlist = watchlist.some(item => item.id === movie.id);
+            const isInWatchlist = watchlist.some(item => item.internalId === movie.internalId);
             setInWatchlist(isInWatchlist);
         }
     }, [watchlist, movie.id]);
 
     useEffect(() => {
         if (watched) {
-            const isInWatched = watched.some(item => item.id === movie.id);
+            const isInWatched = watched.some(item => item.internalId === movie.internaId);
             setInWatched(isInWatched);
         }
     }, [watched, movie.id]);
