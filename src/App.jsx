@@ -69,10 +69,10 @@ function App() {
                 axios.get("http://localhost:3000/api/getPopularRecords", {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 }),
-                axios.get(`http://localhost:3000/api/watchlist/getWatchlist/?username=${username}`, {
+                axios.get(`http://localhost:3000/api/watchlist/getWatchlist?username=${username}`, {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 }),
-                axios.get(`http://localhost:3000/api/watchedHistory/getWatched/?username=${username}`, {
+                axios.get(`http://localhost:3000/api/watchedHistory/getWatched?username=${username}`, {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 })
             ]);
