@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import './Navbar.css'
 
-export default function Navbar(){
+export default function Navbar({logout}){
     return (
         <div className='navbar nunito-sans-light'>
             <div className='navbar-left'>
@@ -26,6 +26,9 @@ export default function Navbar(){
                     <img src='src/assets/search.svg' height="20px"/>
                     <p>SEARCH</p>
                 </div>
+                <NavLink onClick={logout} to="/login">
+                    LOGOUT
+                </NavLink>
             </div>
         </div>
     )

@@ -17,10 +17,8 @@ export default function SignUp({ setIsAuthenticated, setUsername, setToken}){
             if (res.data && res.data.token) {
                 const {token, username} = res.data
                 setIsAuthenticated(true);
-                // setUsername(data.username);
                 console.log(res.data.token); 
                 setToken(token, username);
-                // setToken(res.data.token);
             }
         }
         catch (error) {
