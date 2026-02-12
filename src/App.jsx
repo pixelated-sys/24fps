@@ -58,22 +58,22 @@ function App() {
             
             const [comedyRes, dramaRes, horrorRes, popularRes, watchlistRes, watchedRes] = await Promise.all([
                 axios.get("http://localhost:3000/api/genre/Comedy", {
-                    headers: { Authorization: `Bearer ${cleanToken}` }
+                    headers: { Authorization: `Bearer ${token}` }
                 }),
                 axios.get("http://localhost:3000/api/genre/Drama", {
-                    headers: { Authorization: `Bearer ${cleanToken}` }
+                    headers: { Authorization: `Bearer ${token}` }
                 }),
                 axios.get("http://localhost:3000/api/genre/Horror", {
-                    headers: { Authorization: `Bearer ${cleanToken}` }
+                    headers: { Authorization: `Bearer ${token}` }
                 }),
                 axios.get("http://localhost:3000/api/getPopularRecords", {
-                    headers: { Authorization: `Bearer ${cleanToken}` }
+                    headers: { Authorization: `Bearer ${token}` }
                 }),
                 axios.get(`http://localhost:3000/api/watchlist/getWatchlist?username=${username}`, {
-                    headers: { Authorization: `Bearer ${cleanToken}` }
+                    headers: { Authorization: `Bearer ${token}` }
                 }),
                 axios.get(`http://localhost:3000/api/watchedHistory/getWatched?username=${username}`, {
-                    headers: { Authorization: `Bearer ${cleanToken}` }
+                    headers: { Authorization: `Bearer ${token}` }
                 })
             ]);
             console.log("DEBUG: Comedy Data ->", comedyRes);
@@ -92,7 +92,9 @@ function App() {
             setWatched(watchedRes.data || []);
 
         } catch (error) {
-            console.error("Error fetching genre data:", error.response?.status);
+            console.error("Error fetching data:", error);
+            console.error("Error details:", error.response?.data);
+            console.error("Error status:", error.response?.status);
         }
     };
 
