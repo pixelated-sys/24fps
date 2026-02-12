@@ -12,7 +12,7 @@ export default function Section({ title, movies, onAddToWatchlist,watchlist, onA
             <div className="section">
                 {movies.map((movie) => (
                     <Poster
-                        key={movie.id}
+                        key={movie.internalId}
                         movie={movie}
                         onAddToWatchlist={onAddToWatchlist}
                         onAddToWatched={onAddToWatched}
