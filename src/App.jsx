@@ -57,10 +57,18 @@ function App() {
             console.log("Fetching genre data for:", username);
             
             const [comedyRes, dramaRes, horrorRes, popularRes, watchlistRes, watchedRes] = await Promise.all([
-                axios.get("http://localhost:3000/api/genre/Comedy"),
-                axios.get("http://localhost:3000/api/genre/Drama"),
-                axios.get("http://localhost:3000/api/genre/Horror"),
-                axios.get("http://localhost:3000/api/getPopularRecords"),
+                axios.get("http://localhost:3000/api/genre/Comedy", {
+                    headers: { Authorization: `Bearer ${cleanToken}` }
+                }),
+                axios.get("http://localhost:3000/api/genre/Drama", {
+                    headers: { Authorization: `Bearer ${cleanToken}` }
+                }),
+                axios.get("http://localhost:3000/api/genre/Horror", {
+                    headers: { Authorization: `Bearer ${cleanToken}` }
+                }),
+                axios.get("http://localhost:3000/api/getPopularRecords", {
+                    headers: { Authorization: `Bearer ${cleanToken}` }
+                }),
                 axios.get(`http://localhost:3000/api/watchlist/getWatchlist/?username=${username}`, {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 }),
