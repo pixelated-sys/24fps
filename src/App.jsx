@@ -44,6 +44,7 @@ function App() {
   }
 
   useEffect(() => {
+    // 1. Remove potential quotes from token
     const cleanToken = token ? token.replace(/^"|"$/g, '') : null;
 
     if (!cleanToken || !username) {
@@ -60,10 +61,10 @@ function App() {
                 axios.get("http://localhost:3000/api/genre/Drama"),
                 axios.get("http://localhost:3000/api/genre/Horror"),
                 axios.get("http://localhost:3000/api/getPopularRecords"),
-                axios.get(`http://localhost:3000/api/watchlist/getWatchlist/`,{username: username} ,{
+                axios.get(`http://localhost:3000/api/watchlist/getWatchlist/${username}`, {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 }),
-                axios.get(`http://localhost:3000/api/watchedHistory/getWatched/`, {username: username},{
+                axios.get(`http://localhost:3000/api/watchedHistory/getWatched/${username}`, {
                     headers: { Authorization: `Bearer ${cleanToken}` }
                 })
             ]);
