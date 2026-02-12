@@ -13,8 +13,14 @@ import Login from './Login';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
-  const [watchlist, setWatchlist] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [watchlist, setWatchlist] = useState(() => {
+    const saved = localStorage.getItem("watchlist");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [watched, setWatched] = useState(() => {
+    const saved = localStorage.getItem("watched");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [comedy,setComedy] = useState([]);
   const [drama,setDrama] = useState([]);
   const [horror,setHorror] = useState([]);
@@ -30,9 +36,22 @@ function App() {
   }
   const logout = ()=>{
     localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("watchlist");
+    localStorage.removeItem("watched");
     setToken(null);
     window.location.href = "/login";
   }
+
+  // Save watchlist to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("watchlist", JSON.stringify(watchlist));
+  }, [watchlist]);
+
+  // Save watched to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
   useEffect(() => {
     const cleanToken = token ? token.replace(/^"|"$/g, '') : null;
@@ -73,7 +92,10 @@ function App() {
                 setWatchlist(watchlistRes.data || []);
             } catch (error) {
                 console.error("Error fetching watchlist:", error.response?.status);
-                setWatchlist([]);
+                // Only clear if it's not a network error - keep previous state on network issues
+                if (error.response?.status === 404) {
+                    setWatchlist([]);
+                }
             }
 
             try {
@@ -82,7 +104,10 @@ function App() {
                 setWatched(watchedRes.data || []);
             } catch (error) {
                 console.error("Error fetching watched:", error.response?.status);
-                setWatched([]);
+                // Only clear if it's not a network error - keep previous state on network issues
+                if (error.response?.status === 404) {
+                    setWatched([]);
+                }
             }
 
         } catch (error) {
