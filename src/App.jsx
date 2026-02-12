@@ -89,6 +89,7 @@ function App() {
             try {
                 const watchlistRes = await axios.get(`http://localhost:3000/api/watchlist/getWatchlist?username=${username}`, config);
                 console.log("DEBUG: Watchlist Data ->", watchlistRes.data);
+                console.log("DEBUG: First watchlist item ->", watchlistRes.data?.[0]);
                 setWatchlist(watchlistRes.data || []);
             } catch (error) {
                 console.error("Error fetching watchlist:", error.response?.status);
@@ -101,6 +102,7 @@ function App() {
             try {
                 const watchedRes = await axios.get(`http://localhost:3000/api/watchedHistory/user/getWatched?username=${username}`, config);
                 console.log("DEBUG: Watched Data ->", watchedRes.data);
+                console.log("DEBUG: First watched item ->", watchedRes.data?.[0]);
                 setWatched(watchedRes.data || []);
             } catch (error) {
                 console.error("Error fetching watched:", error.response?.status);
