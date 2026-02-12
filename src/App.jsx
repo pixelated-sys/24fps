@@ -163,7 +163,7 @@ function App() {
   
   return (
     <>
-      {isAuthenticated && <Navbar />}
+      {isAuthenticated && <Navbar logout={logout}/>}
       <Routes>
         <Route
           path='/'

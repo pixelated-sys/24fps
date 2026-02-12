@@ -26,18 +26,16 @@ export default function Poster({ movie, onAddToWatchlist, watchlist, onAddToWatc
     
     const handleWatchlistClick = () => {
         onAddToWatchlist(movie);
-        //setInWatchlist(!inWatchlist);
     };
 
     const handleWatchedClick = () => {
         onAddToWatched(movie);
-        //setInWatchlist(!inWatched);
     };
     
     return (
         <div
             className="poster"
-            key={movie.id}
+            key={movie.internalId}
             style={{
                 backgroundImage: imageUrl ? `url(${imageUrl})` : "none",
                 backgroundSize: "cover",

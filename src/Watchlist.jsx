@@ -10,7 +10,7 @@ export default function Watchlist({ watchlist, toggleWatchlist, watched, toggleW
                 ) : 
                     <div className="watchlist-container">
                         {watchlist.map((movie)=>(
-                            <Poster key={movie.id} movie={movie} onAddToWatchlist={toggleWatchlist} watchlist={watchlist} onAddToWatched={toggleWatched} watched={watched}/>
+                            <Poster key={movie.internalId} movie={movie} onAddToWatchlist={toggleWatchlist} watchlist={watchlist} onAddToWatched={toggleWatched} watched={watched}/>
                         ))}
                     </div>
                     
