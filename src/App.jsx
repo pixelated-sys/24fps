@@ -35,7 +35,6 @@ function App() {
   }
 
   useEffect(() => {
-    // 1. Remove potential quotes from token
     const cleanToken = token ? token.replace(/^"|"$/g, '') : null;
 
     if (!cleanToken || !username) {
@@ -44,7 +43,6 @@ function App() {
     }
 
     const fetchData = async () => {
-        // 2. Create a reusable config with the clean Bearer token
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
@@ -52,31 +50,40 @@ function App() {
         try {
             console.log("Fetching genre data for:", username);
             
-            // 3. Perform parallel requests
-            const [comedyRes, dramaRes, horrorRes, popularRes, watchlistRes, watchedRes] = await Promise.all([
+            const [comedyRes, dramaRes, horrorRes, popularRes] = await Promise.all([
                 axios.get("http://localhost:3000/api/genre/Comedy"),
                 axios.get("http://localhost:3000/api/genre/Drama"),
                 axios.get("http://localhost:3000/api/genre/Horror"),
-                axios.get("http://localhost:3000/api/getPopularRecords"),
-                axios.get(`http://localhost:3000/api/watchlist/getWatchlist?username=${username}`, config),
-                axios.get(`http://localhost:3000/api/watchedHistory/getWatched?username=${username}`, config)
+                axios.get("http://localhost:3000/api/getPopularRecords")
             ]);
             console.log("DEBUG: Comedy Data ->", comedyRes);
             console.log("DEBUG: Drama Data ->", dramaRes);
             console.log("DEBUG: Horror Data ->", horrorRes);
             console.log("DEBUG: Popular Page Object ->", popularRes.data.content);
-            console.log("DEBUG: Watchlist Data ->", watchlistRes.data);
-            console.log("DEBUG: Watched Data ->", watchedRes.data);
 
-            // 4. Update state with the returned List<MovieRecord>
             setComedy(comedyRes.data || []);
             setDrama(dramaRes.data || []);
             setHorror(horrorRes.data || []);
             
-            // Note: Popular endpoint returns a Page object, genres return a List
             setPopular(popularRes.data.content || []);
-            setWatchlist(watchlistRes.data || []);
-            setWatched(watchedRes.data || []);
+
+            try {
+                const watchlistRes = await axios.get(`http://localhost:3000/api/watchlist/getWatchlist?username=${username}`, config);
+                console.log("DEBUG: Watchlist Data ->", watchlistRes.data);
+                setWatchlist(watchlistRes.data || []);
+            } catch (error) {
+                console.error("Error fetching watchlist:", error.response?.status);
+                setWatchlist([]);
+            }
+
+            try {
+                const watchedRes = await axios.get(`http://localhost:3000/api/watchedHistory/getWatched?username=${username}`, config);
+                console.log("DEBUG: Watched Data ->", watchedRes.data);
+                setWatched(watchedRes.data || []);
+            } catch (error) {
+                console.error("Error fetching watched:", error.response?.status);
+                setWatched([]);
+            }
 
         } catch (error) {
             console.error("Error fetching genre data:", error.response?.status);
