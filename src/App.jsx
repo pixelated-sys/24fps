@@ -30,12 +30,20 @@ function App() {
   }
   const logout = ()=>{
     localStorage.removeItem("token");
+    localStorage.removeItem("username");
     setToken(null);
+    setUsername("");
+    setIsAuthenticated(false);
+    setWatchlist([]);
+    setWatched([]);
+    setComedy([]);
+    setDrama([]);
+    setHorror([]);
+    setPopular([]);
     window.location.href = "/login";
   }
 
   useEffect(() => {
-    // 1. Remove potential quotes from token
     const cleanToken = token ? token.replace(/^"|"$/g, '') : null;
 
     if (!cleanToken || !username) {
@@ -47,22 +55,32 @@ function App() {
         try {
             console.log("Fetching genre data for:", username);
             
-            const [comedyRes, dramaRes, horrorRes, popularRes] = await Promise.all([
+            const [comedyRes, dramaRes, horrorRes, popularRes, watchlistRes, watchedRes] = await Promise.all([
                 axios.get("http://localhost:3000/api/genre/Comedy"),
                 axios.get("http://localhost:3000/api/genre/Drama"),
                 axios.get("http://localhost:3000/api/genre/Horror"),
-                axios.get("http://localhost:3000/api/getPopularRecords")
+                axios.get("http://localhost:3000/api/getPopularRecords"),
+                axios.get(`http://localhost:3000/api/watchlist/getWatchlist/`,{username: username} ,{
+                    headers: { Authorization: `Bearer ${cleanToken}` }
+                }),
+                axios.get(`http://localhost:3000/api/watchedHistory/getWatched/`, {username: username},{
+                    headers: { Authorization: `Bearer ${cleanToken}` }
+                })
             ]);
             console.log("DEBUG: Comedy Data ->", comedyRes);
             console.log("DEBUG: Drama Data ->", dramaRes);
             console.log("DEBUG: Horror Data ->", horrorRes);
             console.log("DEBUG: Popular Page Object ->", popularRes.data.content);
+            console.log("DEBUG: Watchlist Data ->", watchlistRes.data);
+            console.log("DEBUG: Watched Data ->", watchedRes.data);
 
             setComedy(comedyRes.data || []);
             setDrama(dramaRes.data || []);
             setHorror(horrorRes.data || []);
             
             setPopular(popularRes.data.content || []);
+            setWatchlist(watchlistRes.data || []);
+            setWatched(watchedRes.data || []);
 
         } catch (error) {
             console.error("Error fetching genre data:", error.response?.status);
