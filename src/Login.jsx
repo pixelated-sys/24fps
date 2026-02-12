@@ -17,7 +17,6 @@ export default function Login({ setIsAuthenticated, setToken }){
             if (res.data && res.data.token) {
                 const {token, username} = res.data;
                 setToken(token, username);
-                // setUsername(data.username);
                 setIsAuthenticated(true);
 
             }

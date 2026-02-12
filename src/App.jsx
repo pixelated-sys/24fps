@@ -99,7 +99,7 @@ function App() {
             }
 
             try {
-                const watchedRes = await axios.get(`http://localhost:3000/api/watchedHistory/getWatched?username=${username}`, config);
+                const watchedRes = await axios.get(`http://localhost:3000/api/watchedHistory/user/getWatched?username=${username}`, config);
                 console.log("DEBUG: Watched Data ->", watchedRes.data);
                 setWatched(watchedRes.data || []);
             } catch (error) {

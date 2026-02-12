@@ -9,8 +9,8 @@ export default function Watchlist({ watchlist, toggleWatchlist, watched, toggleW
                     <p>No movies in your watchlist yet.</p>
                 ) : 
                     <div className="watchlist-container">
-                        {watchlist.map((movie)=>(
-                            <Poster key={movie.internalId} movie={movie} onAddToWatchlist={toggleWatchlist} watchlist={watchlist} onAddToWatched={toggleWatched} watched={watched}/>
+                        {watchlist.map((movie, index)=>(
+                            <Poster key={movie.internalId || `watchlist-${index}`} movie={movie} onAddToWatchlist={toggleWatchlist} watchlist={watchlist} onAddToWatched={toggleWatched} watched={watched}/>
                         ))}
                     </div>
                     

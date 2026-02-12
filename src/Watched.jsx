@@ -9,8 +9,8 @@ export default function Watched({ watched, toggleWatched, watchlist ,toggleWatch
                     <p>Go and watch some movies</p>
                 ) : 
                     <div className="watched-container">
-                        {watched.map((movie)=>(
-                            <Poster key={movie.id} movie={movie} onAddToWatched={toggleWatched} watched={watched} onAddToWatchlist={toggleWatchlist} watchlist={watchlist}/>
+                        {watched.map((movie, index)=>(
+                            <Poster key={movie.internalId || `watched-${index}`} movie={movie} onAddToWatched={toggleWatched} watched={watched} onAddToWatchlist={toggleWatchlist} watchlist={watchlist}/>
                         ))}
                     </div>
                 }
