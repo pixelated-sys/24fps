@@ -30,16 +30,7 @@ function App() {
   }
   const logout = ()=>{
     localStorage.removeItem("token");
-    localStorage.removeItem("username");
     setToken(null);
-    setUsername("");
-    setIsAuthenticated(false);
-    setWatchlist([]);
-    setWatched([]);
-    setComedy([]);
-    setDrama([]);
-    setHorror([]);
-    setPopular([]);
     window.location.href = "/login";
   }
 
@@ -53,28 +44,22 @@ function App() {
     }
 
     const fetchData = async () => {
+        // 2. Create a reusable config with the clean Bearer token
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
         try {
             console.log("Fetching genre data for:", username);
             
+            // 3. Perform parallel requests
             const [comedyRes, dramaRes, horrorRes, popularRes, watchlistRes, watchedRes] = await Promise.all([
-                axios.get("http://localhost:3000/api/genre/Comedy", {
-                    headers: { Authorization: `Bearer ${token}` }
-                }),
-                axios.get("http://localhost:3000/api/genre/Drama", {
-                    headers: { Authorization: `Bearer ${token}` }
-                }),
-                axios.get("http://localhost:3000/api/genre/Horror", {
-                    headers: { Authorization: `Bearer ${token}` }
-                }),
-                axios.get("http://localhost:3000/api/getPopularRecords", {
-                    headers: { Authorization: `Bearer ${token}` }
-                }),
-                axios.get(`http://localhost:3000/api/watchlist/getWatchlist?username=${username}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                }),
-                axios.get(`http://localhost:3000/api/watchedHistory/getWatched?username=${username}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
+                axios.get("http://localhost:3000/api/genre/Comedy"),
+                axios.get("http://localhost:3000/api/genre/Drama"),
+                axios.get("http://localhost:3000/api/genre/Horror"),
+                axios.get("http://localhost:3000/api/getPopularRecords"),
+                axios.get(`http://localhost:3000/api/watchlist/getWatchlist?username=${username}`, config),
+                axios.get(`http://localhost:3000/api/watchedHistory/getWatched?username=${username}`, config)
             ]);
             console.log("DEBUG: Comedy Data ->", comedyRes);
             console.log("DEBUG: Drama Data ->", dramaRes);
@@ -83,23 +68,24 @@ function App() {
             console.log("DEBUG: Watchlist Data ->", watchlistRes.data);
             console.log("DEBUG: Watched Data ->", watchedRes.data);
 
+            // 4. Update state with the returned List<MovieRecord>
             setComedy(comedyRes.data || []);
             setDrama(dramaRes.data || []);
             setHorror(horrorRes.data || []);
             
+            // Note: Popular endpoint returns a Page object, genres return a List
             setPopular(popularRes.data.content || []);
             setWatchlist(watchlistRes.data || []);
             setWatched(watchedRes.data || []);
 
         } catch (error) {
-            console.error("Error fetching data:", error);
-            console.error("Error details:", error.response?.data);
-            console.error("Error status:", error.response?.status);
+            console.error("Error fetching genre data:", error.response?.status);
         }
     };
 
     fetchData();
 }, [token, username]);
+
   
   const handleAddToWatchlist = async (movie) => {
     const isInWatchlist = watchlist.some(item => item.internalId === movie.internalId);
@@ -108,19 +94,17 @@ function App() {
       if (isInWatchlist){
         setWatchlist((prev)=> prev.filter((item)=>item.internalId !== movie.internalId));
         await axios.delete(`http://localhost:3000/api/watchlist/deleteFromWatchlist`,{
-          headers: { Authorization: `Bearer ${token}`},
-          data: { movieId: movie.internalId,username :username }
+          data: { movieId: movie.internalId,username :username },
+          headers: { Authorization: `Bearer ${token}`}
         });
       }
       else{
         if (watched.some(item => item.internalId === movie.internalId)){
           setWatched((prev)=> prev.filter((item)=>item.internalId !== movie.internalId));
           await axios.delete(`http://localhost:3000/api/watchedHistory/deleteFromWatched`,{
-            headers: {
-              Authorization: `Bearer ${token}`
-            },
-            data: {movieId: movie.internalId,username :username}
-          });
+          data: { movieId: movie.internalId,username :username },
+          headers: { Authorization: `Bearer ${token}`}
+        });
         }
         setWatchlist((prev) =>  [...prev, movie]);
         await axios.post(`http://localhost:3000/api/watchlist/addToWatchlist`, {movieId: movie.internalId, username :username},{
@@ -142,16 +126,16 @@ function App() {
       if (isInWatched){
         setWatched((prev)=> prev.filter((item)=>item.internalId !== movie.internalId));
         await axios.delete(`http://localhost:3000/api/watchedHistory/deleteFromWatched`,{
-          headers: { Authorization: `Bearer ${token}`},
-          data: { movieId: movie.internalId,username :username }
+          data: { movieId: movie.internalId,username :username },
+          headers: { Authorization: `Bearer ${token}`}
         });
       }
       else{
         if (watchlist.some(item => item.internalId === movie.internalId)){
           setWatchlist((prev)=> prev.filter((item)=>item.internalId !== movie.internalId));
           await axios.delete(`http://localhost:3000/api/watchlist/deleteFromWatchlist`,{
-            headers: { Authorization: `Bearer ${token}`},
-            data: { movieId: movie.internalId,username :username }
+            data: { movieId: movie.internalId,username :username },
+            headers: { Authorization: `Bearer ${token}`}
           });
         }
         setWatched((prev) =>  [...prev, movie]);
@@ -172,7 +156,7 @@ function App() {
   
   return (
     <>
-      {isAuthenticated && <Navbar logout={logout}/>}
+      {isAuthenticated && <Navbar />}
       <Routes>
         <Route
           path='/'
