@@ -11,13 +11,11 @@ export default function SignUp({ setIsAuthenticated, setUsername, setToken}){
         try {
             console.log(data);
             const res = await axios.post("http://localhost:3000/api/auth/signup",data);
-            const { token, username } = res.data; 
-            
             console.log(res);
             if (res.data && res.data.token) {
-                const {token, username} = res.data
+                const {token, username} = res.data;
                 setIsAuthenticated(true);
-                console.log(res.data.token); 
+                console.log(res.data.token);
                 setToken(token, username);
             }
         }
@@ -27,7 +25,7 @@ export default function SignUp({ setIsAuthenticated, setUsername, setToken}){
                 setErrorMessage(error.response.data.message || "Signup failed");
             }
             else{
-                setErrorMessage("Server is unreachabel.")
+                setErrorMessage("Server is unreachabel.");
             }
         }
     };

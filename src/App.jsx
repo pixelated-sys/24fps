@@ -3,7 +3,6 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import Navbar from './Navbar';
 import Popular from './Popular';
-import dramaData from './assets/drama.json';
 import Section from './Section';
 import axios from 'axios';
 import Watchlist from './Watchlist';
@@ -26,7 +25,8 @@ function App() {
   const [horror,setHorror] = useState([]);
   const [popular,setPopular] = useState([]);
   const [username, setUsername] = useState(localStorage.getItem("username") || "");
-  const [token,setToken] = useState(localStorage.getItem("token")||null);
+  const [token,setToken] = useState(JSON.parse(localStorage.getItem("token"))||null);
+
   const login = (newToken, newUser) =>{
     localStorage.setItem("token",newToken);
     localStorage.setItem("username", newUser); 
@@ -34,6 +34,7 @@ function App() {
     setUsername(newUser);
     setIsAuthenticated(true);
   }
+
   const logout = ()=>{
     localStorage.removeItem("token");
     localStorage.removeItem("username");
@@ -43,20 +44,17 @@ function App() {
     window.location.href = "/login";
   }
 
-  // Save watchlist to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("watchlist", JSON.stringify(watchlist));
   }, [watchlist]);
 
-  // Save watched to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("watched", JSON.stringify(watched));
   }, [watched]);
 
   useEffect(() => {
-    const cleanToken = token ? token.replace(/^"|"$/g, '') : null;
 
-    if (!cleanToken || !username) {
+    if (!token || !username) {
         console.log("Waiting for token and username.");
         return;
     }
@@ -83,7 +81,6 @@ function App() {
             setComedy(comedyRes.data || []);
             setDrama(dramaRes.data || []);
             setHorror(horrorRes.data || []);
-            
             setPopular(popularRes.data.content || []);
 
             try {
@@ -93,7 +90,6 @@ function App() {
                 setWatchlist(watchlistRes.data || []);
             } catch (error) {
                 console.error("Error fetching watchlist:", error.response?.status);
-                // Only clear if it's not a network error - keep previous state on network issues
                 if (error.response?.status === 404) {
                     setWatchlist([]);
                 }
@@ -106,7 +102,6 @@ function App() {
                 setWatched(watchedRes.data || []);
             } catch (error) {
                 console.error("Error fetching watched:", error.response?.status);
-                // Only clear if it's not a network error - keep previous state on network issues
                 if (error.response?.status === 404) {
                     setWatched([]);
                 }

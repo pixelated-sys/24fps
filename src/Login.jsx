@@ -5,14 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function Login({ setIsAuthenticated, setToken }){
-    const {register, handleSubmit, formState : {errors}, reset, resetField} = useForm();
-    //const navigate = useNavigate();
+    const {register, handleSubmit, formState : {errors} } = useForm();
     const [errorMessage, setErrorMessage] = useState("");
     const onLogin = async (data)=>{
         try {
             console.log(data);
-            const res = await axios.post("http://localhost:3000/api/auth/login",data); 
-            const {token, username} = res.data;
+            const res = await axios.post("http://localhost:3000/api/auth/login",data);
             console.log(res);
             if (res.data && res.data.token) {
                 const {token, username} = res.data;
